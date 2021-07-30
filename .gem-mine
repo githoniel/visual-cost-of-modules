@@ -1,0 +1,11 @@
+{
+  "version": "3.0.1",
+  "template_id": "base",
+  "name": "visual-cost-of-modules",
+  "path": "C:\\github\\visual-cost-of-modules",
+  "env": "{\"cli_version\":\"2.21.1\",\"npm_version\":\"7.20.0\",\"node_version\":\"v14.15.1\"}",
+  "user": "githoniel",
+  "email": "githoniel88@gmail.com",
+  "choice": "{\"templateId\":\"base\",\"packageManager\":\"yarn\",\"registry\":\"http://registry.npm.sdp.nd/\",\"features\":[\"lintBeforeCommit\",\"ts\",\"jest\"],\"sass\":false,\"ui\":\"fish\"}",
+  "project_id": "ec1497d0-f112-11eb-a6a7-9dfdd2c19551_1627634913741"
+}
