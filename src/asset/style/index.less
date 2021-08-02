@@ -2,6 +2,26 @@ html,
 body {
   height: 100%;
   margin: 0;
+
+  ::-webkit-scrollbar {
+    height: 10px;
+    width: 10px;
+    background-color: #f5f5f5;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border: 1px solid #ccc;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #999;
+    border: 1px solid #888;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #ccc;
+  }
 }
 
 body {

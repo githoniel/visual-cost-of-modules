@@ -5,5 +5,12 @@
 const { defineConfig } = require('@gem-mine/script')
 
 module.exports = defineConfig({
-  showDevEntry: false
+  showDevEntry: false,
+  css: {
+    less: {
+      lessOptions: {
+        always: true
+      }
+    }
+  }
 })

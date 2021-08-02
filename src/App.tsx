@@ -1,14 +1,10 @@
 import React from 'react'
 import { render } from 'react-dom'
 
+import Home from '@/page/Home'
 import '@/asset/style/index.less'
 
-class App extends React.Component {
-  render(): JSX.Element {
-    return (
-      <div>sadasd</div>
-    )
-  }
-}
-
-render(<App />, document.querySelector('#root'))
+render(
+  <Home />,
+  document.querySelector('#root')
+)
