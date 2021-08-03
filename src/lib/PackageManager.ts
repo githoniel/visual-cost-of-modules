@@ -1,8 +1,13 @@
 import axios from 'axios'
+import maxSatisfying from 'semver/ranges/max-satisfying'
 
 export interface PkgInfo {
   name: string,
   version: string,
+  dist: {
+    size: number,
+    tarball: string
+  }
 }
 
 export type DepsTree = PkgInfo & {
@@ -15,7 +20,11 @@ export interface RegistryPkgInfo {
   },
   name: string,
   versions: {
-    [key: string]: any
+    [key: string]: PkgInfo & {
+      dependencies: {
+        [key: string]: string
+      }[]
+    }
   }
   dependencies: []
 }
@@ -23,16 +32,20 @@ export interface RegistryPkgInfo {
 export default class PackageManager {
   public registry = 'https://api.npms.io/v2/package/'
 
+  public timeout = 0
+
   constructor({
-    registry
+    registry,
+    timeout
   }: {
     registry?: string
+    timeout?: number
   } = {}) {
     if (registry) {
-      /**
-       * @property {string} registry 当前包管理器registry
-       */
       this.registry = registry
+    }
+    if (timeout) {
+      this.timeout = timeout
     }
   }
 
@@ -40,55 +53,29 @@ export default class PackageManager {
     packageName: string,
     options: {
       version?: string
-      timeout?: number
     } = {}
   ) {
-    const { timeout = 0, version } = options
+    const { version } = options
     const pkgRequest = version
       ? `${window.encodeURIComponent(packageName)}/${window.encodeURIComponent(version)}`
       : `${window.encodeURIComponent(packageName)}`
     const requestData = await axios.get(
       `${this.registry}${pkgRequest}`,
       {
-        timeout
+        timeout: this.timeout
       }
     )
-    return requestData.data as RegistryPkgInfo
+    return requestData.data as RegistryPkgInfo & PkgInfo
   }
 
-  async getDepsTree(
+  async getDepsPkgInfo(
     packageName: string,
-    options: {
-      version: string
-      timeout?: number
-    }
+    requiredVersion: string
   ) {
-    const { version, timeout } = options
-    const rootPkgInfo = await this.getMetadata(packageName, options)
+    const pkgInfo = await this.getMetadata(packageName)
+    const versions = Object.keys(pkgInfo.versions)
 
-    const depsTree = {
-      name: packageName,
-      version,
-      dependencies: Object.keys(rootPkgInfo.dependencies).map((pkgName) => {
-        const pkgVersion = rootPkgInfo.dependencies[pkgName]
-        return {
-          name: pkgName,
-          version: pkgVersion
-        }
-      })
-    }
-    return this.updateDepsByBFS(depsTree, timeout)
-  }
-
-  async updateDepsByBFS(currentTree: DepsTree, timeout?: number) {
-    await Promise.all(
-      currentTree.dependencies
-        .map(async (pkgInfo) => {
-          const depInfo = await this.getMetadata(pkgInfo.name, {
-            version: pkgInfo.version,
-            timeout,
-          })
-        })
-    )
+    const bestVersion = maxSatisfying(versions, requiredVersion)!
+    return pkgInfo.versions[bestVersion] as RegistryPkgInfo & PkgInfo
   }
 }

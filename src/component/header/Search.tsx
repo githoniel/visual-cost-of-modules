@@ -21,6 +21,8 @@ export default function PkgSearch({
 
   const onSearch = (value: string) => {
     if (value) {
+      setTargetName('')
+      setTargetVersion('')
       execSearch(value)
     }
   }

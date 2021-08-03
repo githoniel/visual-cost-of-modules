@@ -72,7 +72,7 @@ export default function VersionChoose({
   return (
     <>
       <Card
-        style={{ width: '100%', }}
+        style={{ width: '100%', zIndex: 99 }}
         title="Choose package version"
         className="version-choose"
         tabList={tabList}

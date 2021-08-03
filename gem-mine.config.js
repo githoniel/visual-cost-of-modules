@@ -7,9 +7,11 @@ const { defineConfig } = require('@gem-mine/script')
 module.exports = defineConfig({
   showDevEntry: false,
   css: {
-    less: {
-      lessOptions: {
-        always: true
+    loaderOptions: {
+      less: {
+        lessOptions: {
+          math: 'always'
+        }
       }
     }
   }

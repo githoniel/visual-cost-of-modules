@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import { Layout } from 'fish'
 import PkgSearch from '@/component/header/Search'
-import Chart from '@/component/content/Chart'
+import Content from '@/component/content/Content'
 import {
   PMContext,
   usePMContextRoot
@@ -24,7 +24,7 @@ export default function Home() {
           setTargetVersion={setTargetVersion}
         />
         <Layout.Content>
-          <Chart
+          <Content
             name={targetName}
             version={targetVersion}
           />

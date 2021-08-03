@@ -3,7 +3,8 @@ import PackageManager from '@/lib/PackageManager'
 
 export function usePMContextRoot() {
   const [pm] = useState(() => new PackageManager({
-    registry: 'https://registry.cnpmjs.org/'
+    registry: 'https://registry.npm.taobao.org/'
+    // 'https://registry.cnpmjs.org/'
   }))
 
   return {

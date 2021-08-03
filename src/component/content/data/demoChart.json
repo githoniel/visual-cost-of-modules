@@ -1,0 +1,50 @@
+{
+  "nodes": [
+    {
+      "name": "Myriel",
+      "symbolSize": 30,
+      "x": 0,
+      "y": 0,
+      "tarball": "123123123",
+      "category": 0,
+      "label": {
+        "show": true,
+        "position": "inside"
+      }
+    },
+    {
+      "name": "Myriel1",
+      "symbolSize": 100,
+      "x": 100,
+      "y": 200,
+      "tarball": "123123123",
+      "category": 1
+    },
+    {
+      "name": "Myriel2",
+      "symbolSize": 50,
+      "x": 50,
+      "y": 60,
+      "tarball": "123123123",
+      "category": 1
+    }
+  ],
+  "links": [
+    {
+      "source": "Myriel",
+      "target": "Myriel1"
+    },
+    {
+      "source": "Myriel",
+      "target": "Myriel2"
+    }
+  ],
+  "categories": [
+    {
+      "name": "类目0"
+    },
+    {
+      "name": "类目1"
+    }
+  ]
+}
