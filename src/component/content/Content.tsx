@@ -11,7 +11,7 @@ export default function Content({
   name: string,
   version: string,
 }) {
-  if (!name || !version) {
+  if (name || version) {
     return (<DemoChart />)
   } else {
     return (
