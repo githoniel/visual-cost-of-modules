@@ -9,6 +9,7 @@ import createGraphEvent from '@/lib/createGraphEvent'
 import addCurrentNodeSettings from '@/lib/nodeSetting'
 import { EventType, GraphNode } from '@/lib/BuildDataEvent'
 import { usePM } from '@/page/hook/usePMContext'
+import { StellarColor } from './const'
 
 const FixNodeName = '__fix_node__'
 
@@ -33,7 +34,7 @@ export default function DepChart({
         }
         return {
           size: node.data.displaySize,
-          color: 0xFF0894
+          color: StellarColor[node.data.depLevel]
         }
       }
     })

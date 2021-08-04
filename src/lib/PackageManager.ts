@@ -74,8 +74,9 @@ export default class PackageManager {
   ) {
     const pkgInfo = await this.getMetadata(packageName)
     const versions = Object.keys(pkgInfo.versions)
-
-    const bestVersion = maxSatisfying(versions, requiredVersion)!
+    const bestVersion = requiredVersion === 'latest'
+      ? pkgInfo['dist-tags'][requiredVersion]
+      : maxSatisfying(versions, requiredVersion)!
     return pkgInfo.versions[bestVersion] as RegistryPkgInfo & PkgInfo
   }
 }

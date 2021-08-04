@@ -83,7 +83,7 @@ async function updateDepsNodes(
     nodes,
   })
   // 嵌套一把
-  if (taskStack.stack.length > 0) {
+  if (taskStack.stack.length > 0 && currentLevel <= 2) {
     updateDepsNodes(event, pm, taskStack)
   } else {
     taskStack.cacheObj = {}
@@ -102,7 +102,7 @@ function getNodeData(
   return {
     name: fullName,
     data: {
-      displaySize: pkgInfo.dist.size / 10240,
+      displaySize: Math.log(pkgInfo.dist.size),
       depLevel: currentLevel,
       detail: pkgInfo
     }
