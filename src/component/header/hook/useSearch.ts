@@ -23,7 +23,6 @@ export default function useSearch() {
       const result = await pm.getMetadata(packageName)
       setSearchResult(result)
       setSearchState(SearchState.Succ)
-      console.log(result)
     } catch (e) {
       message.error(e.message)
       setSearchResult(e)

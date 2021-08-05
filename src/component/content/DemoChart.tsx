@@ -1,5 +1,5 @@
 import React from 'react'
 
-export default function DemoChart() {
-  return (<div id="demo-chart" />)
+export default function DepChart() {
+  return (<div id="dep-chart" />)
 }

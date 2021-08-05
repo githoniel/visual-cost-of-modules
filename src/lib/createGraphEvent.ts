@@ -1,4 +1,5 @@
-import BuildDataEvent, { GraphNode, EventType } from './BuildDataEvent'
+import BuildDataEvent, { GraphNode, EventType, GraphLink } from './BuildDataEvent'
+import getStellarColor from './getStellarColor'
 import PackageManager, { PkgInfo, RegistryPkgInfo } from './PackageManager'
 
 interface TaskPkg {
@@ -9,8 +10,8 @@ interface TaskPkg {
 
 interface TaskStack {
   level: number,
-  cacheObj: {}
-  stack: Array<TaskPkg>
+  taskHistory: Object,
+  task: Array<TaskPkg>
 }
 
 export default function createGraphEvent({
@@ -33,18 +34,24 @@ async function updateRootData(
   name: string,
   version: string
 ) {
+  event.dispatch(EventType.Progress, {
+    count: 1,
+    level: 0,
+  })
   const pkgInfo = await pm.getMetadata(name, { version })
   const rootNode = getNodeData(pkgInfo, 0)
+  const nodeName = rootNode.data.id
   event.dispatch(EventType.Data, {
-    nodes: [rootNode]
+    nodes: [rootNode],
+    edges: []
   })
   // 队列任务
   const taskStack:TaskStack = {
     level: 1,
-    cacheObj: {
-      [rootNode.name]: true
+    taskHistory: {
+      [nodeName]: true
     },
-    stack: convertDepsToTask(rootNode.name, pkgInfo.dependencies)
+    task: convertDepsToTask(nodeName, pkgInfo.dependencies)
   }
   updateDepsNodes(event, pm, taskStack)
 }
@@ -54,13 +61,16 @@ async function updateDepsNodes(
   pm: PackageManager,
   taskStack: TaskStack,
 ) {
-  const currentLevelTask = taskStack.stack
+  const currentLevelTask = taskStack.task
   const currentLevel = taskStack.level
-  taskStack.stack = []
+  taskStack.task = []
   taskStack.level += 1
-
   const nodes: GraphNode[] = []
-
+  const links: GraphLink[] = []
+  event.dispatch(EventType.Progress, {
+    count: currentLevelTask.length,
+    level: currentLevel,
+  })
   await Promise.all(currentLevelTask.map(async ({
     name,
     requiredVersion,
@@ -68,25 +78,39 @@ async function updateDepsNodes(
   }) => {
     const pkgInfo = await pm.getDepsPkgInfo(name, requiredVersion)
     const node = getNodeData(pkgInfo, currentLevel)
-    node.link = {
-      source: node.name,
-      target: requiredBy
+    const nodeName = node.data.id
+    if (!taskStack.taskHistory[nodeName]) {
+      taskStack.taskHistory[nodeName] = true
+      nodes.push(node)
+      taskStack.task = [
+        ...taskStack.task,
+        ...convertDepsToTask(
+          nodeName,
+          pkgInfo.dependencies,
+          taskStack.taskHistory
+        )
+      ]
     }
-    nodes.push(node)
-    taskStack.stack = [
-      ...taskStack.stack,
-      ...convertDepsToTask(node.name, pkgInfo.dependencies)
-    ]
-    taskStack.cacheObj[node.name] = true
-  }))
+    links.push({
+      data: {
+        id: `${nodeName} -> ${requiredBy}`,
+        source: nodeName,
+        target: requiredBy
+      }
+    })
+  })).catch((e) => {
+    event.dispatch(EventType.Error, e)
+    throw e
+  })
   event.dispatch(EventType.Data, {
     nodes,
+    edges: links
   })
   // 嵌套一把
-  if (taskStack.stack.length > 0 && currentLevel <= 2) {
+  if (taskStack.task.length > 0) {
     updateDepsNodes(event, pm, taskStack)
   } else {
-    taskStack.cacheObj = {}
+    taskStack.taskHistory = {}
     event.dispatch(EventType.End)
   }
 }
@@ -95,16 +119,21 @@ function getNodeData(
   pkgInfo: RegistryPkgInfo & PkgInfo,
   currentLevel: number
 ): GraphNode {
-  if (!pkgInfo) {
-    debugger
-  }
   const fullName = `${pkgInfo.name}@${pkgInfo.version}`
+  const displaySize = Math.max(pkgInfo.dist.size / 20480, 5)
   return {
-    name: fullName,
     data: {
-      displaySize: Math.log(pkgInfo.dist.size),
+      id: fullName
+    },
+    scratch: {
+      displaySize,
       depLevel: currentLevel,
       detail: pkgInfo
+    },
+    style: {
+      height: displaySize,
+      width: displaySize,
+      'background-color': getStellarColor(currentLevel)
     }
   }
 }

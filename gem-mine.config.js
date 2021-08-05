@@ -14,5 +14,9 @@ module.exports = defineConfig({
         }
       }
     }
+  },
+  chainWebpack(config) {
+    config.resolve.alias
+      .set('exdat', 'exdat/build/dat.gui')
   }
 })

@@ -1,6 +1,6 @@
 import React from 'react'
 import DemoChart from './DemoChart'
-import DepChart from './DepChart'
+import DepGraph from './DepGraph'
 
 import './style/content.less'
 
@@ -11,11 +11,11 @@ export default function Content({
   name: string,
   version: string,
 }) {
-  if (name || version) {
+  if (!name || !version) {
     return (<DemoChart />)
   } else {
     return (
-      <DepChart
+      <DepGraph
         name={name}
         version={version}
       />

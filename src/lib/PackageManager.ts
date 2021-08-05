@@ -34,6 +34,10 @@ export default class PackageManager {
 
   public timeout = 0
 
+  public cache: {
+    [key: string]: RegistryPkgInfo & PkgInfo
+  } = {}
+
   constructor({
     registry,
     timeout
@@ -72,7 +76,13 @@ export default class PackageManager {
     packageName: string,
     requiredVersion: string
   ) {
-    const pkgInfo = await this.getMetadata(packageName)
+    let pkgInfo: RegistryPkgInfo & PkgInfo
+    if (this.cache[packageName]) {
+      pkgInfo = this.cache[packageName]
+    } else {
+      pkgInfo = await this.getMetadata(packageName)
+      this.cache[packageName] = pkgInfo
+    }
     const versions = Object.keys(pkgInfo.versions)
     const bestVersion = requiredVersion === 'latest'
       ? pkgInfo['dist-tags'][requiredVersion]
