@@ -3,11 +3,13 @@ import cytoscape from 'cytoscape'
 import fcose from 'cytoscape-fcose'
 
 import createGraphEvent from '@/lib/createGraphEvent'
-import { EventType, GraphLink, GraphNode } from '@/lib/BuildDataEvent'
+import {
+  EventType, GraphLink, GraphNode, GraphNodeScratch
+} from '@/lib/BuildDataEvent'
 import { usePM } from '@/page/hook/usePMContext'
 import { SearchState } from '../header/hook/useSearch'
 import Loading from './Loading'
-// import { StellarColor } from './const'
+import PkgInfo from './PkgInfo'
 
 cytoscape.use(fcose)
 
@@ -20,6 +22,7 @@ export default function DepGraph({
 }) {
   const [message, setMessage] = useState('Loading')
   const [status, setStatus] = useState<SearchState>(SearchState.Idle)
+  const [info, setInfo] = useState<GraphNodeScratch>()
 
   const { pm } = usePM()
   useEffect(() => {
@@ -74,18 +77,17 @@ export default function DepGraph({
         edges: GraphLink[]
       }) => {
         cy.add(data)
+        cy.nodes().on('click', (e) => {
+          const nodeScratch = e.target.scratch()
+          console.log(nodeScratch)
+          setInfo(nodeScratch)
+        })
         cy.layout({
           name: 'fcose',
           quality: 'proof',
-          nodeSeparation: 200,
           nodeDimensionsIncludeLabels: true,
         }).run()
       })
-
-    cy.nodes().on('click', (e) => {
-      console.dir(e)
-      console.log(e.target.scratch())
-    })
 
     return () => {
       cy.unmount()
@@ -98,6 +100,13 @@ export default function DepGraph({
         message={message}
         status={status}
       />
+      {
+        info && (
+          <PkgInfo
+            info={info}
+          />
+        )
+      }
       <div id="dep-graph" />
     </>
   )

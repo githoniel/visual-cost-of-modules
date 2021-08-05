@@ -1,16 +1,17 @@
 import { EventEmitter } from 'events'
 import type { PkgInfo, RegistryPkgInfo } from './PackageManager'
 
+export interface GraphNodeScratch {
+  displaySize: number,
+  depLevel: number,
+  detail: PkgInfo & RegistryPkgInfo
+}
 export interface GraphNode {
   data: {
     id: string,
   },
   style?: Object,
-  scratch: {
-    displaySize: number,
-    depLevel: number,
-    detail: PkgInfo & RegistryPkgInfo
-  },
+  scratch: GraphNodeScratch,
 }
 
 export interface GraphLink {
