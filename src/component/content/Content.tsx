@@ -28,6 +28,7 @@ export default function Content({
             name={name}
             version={version}
             layoutOption={layoutOption}
+            cyInstance={cyInstance}
             setCyInstance={setCyInstance}
           />
         ) : (

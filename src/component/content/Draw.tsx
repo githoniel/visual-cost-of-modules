@@ -34,6 +34,12 @@ export default function GraphDraw({
     }
   }
 
+  const FindRoot = () => {
+    if (cyInstance) {
+      const node = cyInstance.elements()[0]
+      cyInstance.fit(node, 100)
+    }
+  }
   return (
     <>
       <div className="draw-opener">
@@ -101,6 +107,10 @@ export default function GraphDraw({
                   ))
                 }
               </Select>
+            </div>
+            <br />
+            <div>
+              <Button onClick={FindRoot}>GoTo Root</Button>
             </div>
           </Card>
         )

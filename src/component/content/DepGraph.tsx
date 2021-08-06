@@ -14,11 +14,13 @@ export default function DepGraph({
   name,
   version,
   layoutOption,
+  cyInstance,
   setCyInstance
 }: {
   name: string,
   version: string,
   layoutOption: Object,
+  cyInstance: any,
   setCyInstance: (cy: any) => void
 }) {
   const [message, setMessage] = useState('Loading')
@@ -51,6 +53,14 @@ export default function DepGraph({
           }
         },
         {
+          selector: 'node:selected',
+          style: {
+            'border-width': '1',
+            'border-color': 'red',
+            'border-style': 'solid'
+          }
+        },
+        {
           selector: 'edge',
           style: {
             width: 0.5,
@@ -60,6 +70,13 @@ export default function DepGraph({
             'target-arrow-shape': 'triangle-backcurve',
             'curve-style': 'bezier',
             'arrow-scale': 0.5
+          }
+        },
+        {
+          selector: 'edge:selected',
+          style: {
+            'line-color': 'red',
+            width: 1,
           }
         }
       ]
@@ -134,6 +151,7 @@ export default function DepGraph({
         info && (
           <PkgInfo
             info={info}
+            cyInstance={cyInstance}
           />
         )
       }

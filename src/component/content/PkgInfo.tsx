@@ -10,12 +10,14 @@ export interface EdgeInfo {
 }
 
 export default function PkgInfo({
-  info
+  info,
+  cyInstance
 }: {
   info: (GraphNodeScratch & EdgeInfo) | {
     source: string,
     target: string
-  }
+  },
+  cyInstance: any
 }) {
   const [show, setIsShow] = useState(false)
 
@@ -34,6 +36,16 @@ export default function PkgInfo({
   const edgeInfo = info as {
     source: string,
     target: string
+  }
+
+  const gotoNode = (name: string) => {
+    debugger
+    if (cyInstance) {
+      const node = cyInstance.getElementById(name)
+      if (node) {
+        cyInstance.fit(node)
+      }
+    }
   }
   return (
     <>
@@ -111,7 +123,12 @@ export default function PkgInfo({
                   <div className="value">
                     {
                       nodeInfo.requirePkg.map((name) => (
-                        <div>{name}</div>
+                        <Button
+                          type="text"
+                          onClick={() => gotoNode(name)}
+                        >
+                          {name}
+                        </Button>
                       ))
                     }
                   </div>
@@ -123,7 +140,12 @@ export default function PkgInfo({
                   <div className="value">
                     {
                       nodeInfo.requiredByPkg.map((name) => (
-                        <div>{name}</div>
+                        <Button
+                          type="text"
+                          onClick={() => gotoNode(name)}
+                        >
+                          {name}
+                        </Button>
                       ))
                     }
                   </div>
@@ -136,7 +158,12 @@ export default function PkgInfo({
                     package
                   </div>
                   <div className="value">
-                    {edgeInfo.source}
+                    <Button
+                      type="text"
+                      onClick={() => gotoNode(edgeInfo.source)}
+                    >
+                      {edgeInfo.source}
+                    </Button>
                   </div>
                 </p>
                 <p className="line">
@@ -144,7 +171,12 @@ export default function PkgInfo({
                     required by
                   </div>
                   <div className="value">
-                    {edgeInfo.target}
+                    <Button
+                      type="text"
+                      onClick={() => gotoNode(edgeInfo.target)}
+                    >
+                      {edgeInfo.target}
+                    </Button>
                   </div>
                 </p>
               </>
