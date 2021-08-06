@@ -42,7 +42,6 @@ export default function PkgInfo({
   }
 
   const gotoNode = (name: string) => {
-    debugger
     if (cyInstance) {
       const node = cyInstance.getElementById(name)
       if (node) {
@@ -50,6 +49,8 @@ export default function PkgInfo({
       }
     }
   }
+
+  console.log(info)
   return (
     <>
       {
@@ -91,7 +92,11 @@ export default function PkgInfo({
                     size
                   </div>
                   <div className="value">
-                    {prettyBytes(nodeInfo.detail.dist.size || 0)}
+                    {
+                      nodeInfo.detail.dist.size
+                        ? prettyBytes(nodeInfo.detail.dist.size)
+                        : 'unknown'
+                    }
                   </div>
                 </p>
                 <p className="line">

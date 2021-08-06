@@ -14,22 +14,30 @@ interface TaskStack {
   task: Array<TaskPkg>
 }
 
+type BuildGrapEvent = BuildDataEvent<{
+  fixedSize: boolean
+}>
+
 export default function createGraphEvent({
   pm,
   name,
   version,
+  fixedSize
 }: {
   pm: PackageManager,
   name: string,
   version: string,
+  fixedSize: boolean
 }) {
-  const event = new BuildDataEvent()
+  const event = new BuildDataEvent({
+    fixedSize
+  })
   updateRootData(event, pm, name, version)
   return event
 }
 
 async function updateRootData(
-  event: BuildDataEvent,
+  event: BuildGrapEvent,
   pm: PackageManager,
   name: string,
   version: string
@@ -39,7 +47,7 @@ async function updateRootData(
     level: 0,
   })
   const pkgInfo = await pm.getMetadata(name, { version })
-  const rootNode = getNodeData(pkgInfo, 0)
+  const rootNode = getNodeData(event, pkgInfo, 0)
   const nodeName = rootNode.data.id
   event.dispatch(EventType.Data, {
     nodes: [rootNode],
@@ -57,7 +65,7 @@ async function updateRootData(
 }
 
 async function updateDepsNodes(
-  event: BuildDataEvent,
+  event: BuildGrapEvent,
   pm: PackageManager,
   taskStack: TaskStack,
 ) {
@@ -77,7 +85,7 @@ async function updateDepsNodes(
     requiredBy
   }) => {
     const pkgInfo = await pm.getDepsPkgInfo(name, requiredVersion)
-    const node = getNodeData(pkgInfo, currentLevel)
+    const node = getNodeData(event, pkgInfo, currentLevel)
     const nodeName = node.data.id
     if (!taskStack.taskHistory[nodeName]) {
       taskStack.taskHistory[nodeName] = true
@@ -116,12 +124,16 @@ async function updateDepsNodes(
 }
 
 function getNodeData(
+  event: BuildGrapEvent,
   pkgInfo: RegistryPkgInfo & PkgInfo,
   currentLevel: number
 ): GraphNode {
   pkgInfo.dist.size = pkgInfo.dist.size || pkgInfo.dist.unpackedSize
   const fullName = `${pkgInfo.name}@${pkgInfo.version}`
-  const displaySize = Math.max(pkgInfo.dist.size / 20480, 5)
+  const displaySize = event.option.fixedSize
+    ? 5
+    : Math.max(pkgInfo.dist.size / 20480, 5)
+
   return {
     data: {
       id: fullName
@@ -132,8 +144,8 @@ function getNodeData(
       detail: pkgInfo
     },
     style: {
-      height: displaySize,
-      width: displaySize,
+      height: Number.isNaN(displaySize) ? 5 : displaySize,
+      width: Number.isNaN(displaySize) ? 5 : displaySize,
       'background-color': getStellarColor(currentLevel)
     }
   }

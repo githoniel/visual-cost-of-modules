@@ -45,7 +45,12 @@ interface EventArgType {
   [EventType.End]: undefined
 }
 
-export default class BuildDataEvent extends EventEmitter {
+export default class BuildDataEvent<U> extends EventEmitter {
+  constructor(public option: U) {
+    super()
+    this.option = option
+  }
+
   dispatch<T extends keyof EventArgType, V extends EventArgType[T]>(
     eventName: T, data?: V
   ) {

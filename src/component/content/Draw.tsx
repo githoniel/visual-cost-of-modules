@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {
-  Button, Card, Input, Select
+  Button, Card, Input, Select, Checkbox
 } from 'antd'
 import {
   SettingOutlined,
@@ -14,12 +14,16 @@ const { Option } = Select
 
 export default function GraphDraw({
   layoutOption,
+  cyInstance,
   setLayoutOption,
-  cyInstance
+  setFixedSize,
+  forceUpdate
 }: {
   layoutOption: any,
-  setLayoutOption: (value: any) => void,
   cyInstance: any
+  setLayoutOption: (value: any) => void,
+  setFixedSize: (value: boolean) => void,
+  forceUpdate: () => void
 }) {
   const { pm } = usePM()
   const [visible, setVisible] = useState(false)
@@ -38,12 +42,28 @@ export default function GraphDraw({
     }
   }
 
-  const FindRoot = () => {
+  const findRoot = () => {
     if (cyInstance) {
       const node = cyInstance.elements()[0]
       cyInstance.fit(node, 100)
     }
   }
+
+  const relayout = () => {
+    if (cyInstance) {
+      if (cyInstance) {
+        cyInstance.layout(layoutOption)
+          .run()
+      }
+    }
+  }
+
+  const onSizeChange = (e) => {
+    const isChecked = e.target.checked
+    setFixedSize(!isChecked)
+    forceUpdate()
+  }
+
   return (
     <>
       <div className="draw-opener">
@@ -80,7 +100,7 @@ export default function GraphDraw({
           >
             <div>
               <Input.Search
-                placeholder="输入搜索文本"
+                placeholder="input registry, end with `/`"
                 defaultValue={pm.registry}
                 enterButton="OK"
                 onSearch={(value: string) => {
@@ -113,7 +133,21 @@ export default function GraphDraw({
             </div>
             <br />
             <div>
-              <Button onClick={FindRoot}>GoTo Root</Button>
+              <span>
+                DisplaySize:
+              </span>
+              <Checkbox
+                defaultChecked
+                onChange={onSizeChange}
+              >
+                package size
+              </Checkbox>
+            </div>
+            <br />
+            <div>
+              <Button onClick={findRoot}>Go to Root</Button>
+              <span>{' '}</span>
+              <Button onClick={relayout}>Refresh Layout</Button>
             </div>
           </Card>
         )

@@ -28,6 +28,7 @@ export default function Loading({
         type && (
           <Alert
             message={message}
+            closable={type === 'success'}
             type={type}
           />
         )

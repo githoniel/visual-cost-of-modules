@@ -13,12 +13,14 @@ import PkgInfo, { EdgeInfo } from './PkgInfo'
 export default function DepGraph({
   name,
   version,
+  fixedSize,
   layoutOption,
   cyInstance,
   setCyInstance
 }: {
   name: string,
   version: string,
+  fixedSize: boolean,
   layoutOption: Object,
   cyInstance: any,
   setCyInstance: (cy: any) => void
@@ -45,8 +47,6 @@ export default function DepGraph({
             label: 'data(id)',
             'font-size': '6px',
             color: '#333',
-            // 'text-outline-color': '#888',
-            // 'text-outline-width': 1,
             'text-valign': 'center',
             'text-halign': 'right',
             shape: 'ellipse'
@@ -82,7 +82,7 @@ export default function DepGraph({
       ]
     })
     const event = createGraphEvent({
-      pm, name, version
+      pm, name, version, fixedSize
     })
     event
       .onEvent(EventType.Error, (e: Error) => {
@@ -118,7 +118,6 @@ export default function DepGraph({
                   requirePkg.push(sourceId)
                 }
               })
-            console.dir(nodeScratch)
             setInfo({
               ...nodeScratch,
               requirePkg,
