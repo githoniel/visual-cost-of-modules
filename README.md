@@ -6,3 +6,11 @@
 - use `https://registry.npmjs.cf/` as default registry
 
 Note: office npm registry does not support cors
+
+# Options
+
+Click `Setting` on left top of page, you can
+
+- change default registry
+- change layout
+- find root package
