@@ -119,6 +119,7 @@ function getNodeData(
   pkgInfo: RegistryPkgInfo & PkgInfo,
   currentLevel: number
 ): GraphNode {
+  pkgInfo.dist.size = pkgInfo.dist.size || pkgInfo.dist.unpackedSize
   const fullName = `${pkgInfo.name}@${pkgInfo.version}`
   const displaySize = Math.max(pkgInfo.dist.size / 20480, 5)
   return {

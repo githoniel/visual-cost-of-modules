@@ -7,7 +7,8 @@ export interface PkgInfo {
   homepage: string,
   dist: {
     size: number,
-    tarball: string
+    unpackedSize: number,
+    tarball: string,
   }
 }
 

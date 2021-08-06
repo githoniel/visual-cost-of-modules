@@ -91,7 +91,7 @@ export default function PkgInfo({
                     size
                   </div>
                   <div className="value">
-                    {prettyBytes(nodeInfo.detail.dist.size)}
+                    {prettyBytes(nodeInfo.detail.dist.size || 0)}
                   </div>
                 </p>
                 <p className="line">
