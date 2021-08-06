@@ -1,5 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Card, Icon, Button } from 'fish'
+import { Card, Button } from 'antd'
+import {
+  CloseOutlined
+} from '@ant-design/icons'
 import prettyBytes from 'pretty-bytes'
 import { GraphNodeScratch } from '@/lib/BuildDataEvent'
 import './style/pkgInfo.less'
@@ -64,13 +67,12 @@ export default function PkgInfo({
                 type="text"
                 shape="circle"
                 icon={(
-                  <Icon
+                  <CloseOutlined
                     onClick={
                       close
                     }
-                    type="close"
                   />
-                  )}
+                )}
               />
             )}
           >

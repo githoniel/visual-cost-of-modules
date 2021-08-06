@@ -1,8 +1,8 @@
 import React, { useMemo, useState } from 'react'
 import {
   Card, Button, Radio
-} from 'fish'
-import type { RadioChangeEvent } from '@sdp.nd/fish/es/radio'
+} from 'antd'
+import type { RadioChangeEvent } from 'antd/es/radio'
 
 import type { RegistryPkgInfo } from '@/lib/PackageManager'
 

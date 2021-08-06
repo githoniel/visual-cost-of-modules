@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react'
 import { RegistryPkgInfo } from '@/lib/PackageManager'
 import { usePM } from '@/page/hook/usePMContext'
-import { message } from 'fish'
+import { message } from 'antd'
 
 export enum SearchState {
   Idle,

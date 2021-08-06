@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 import {
-  Button, Card, Icon, Input, Select
-} from 'fish'
+  Button, Card, Input, Select
+} from 'antd'
+import {
+  SettingOutlined,
+  CloseOutlined
+} from '@ant-design/icons'
 import './style/draw.less'
 import { usePM } from '@/page/hook/usePMContext'
 import { LayoutEnum, LayoutOption } from './const'
@@ -47,11 +51,10 @@ export default function GraphDraw({
           type="text"
           shape="circle"
           icon={(
-            <Icon
+            <SettingOutlined
               onClick={
-              showDrawer
-            }
-              type="setting"
+                showDrawer
+              }
             />
         )}
         />
@@ -67,9 +70,8 @@ export default function GraphDraw({
                 type="text"
                 shape="circle"
                 icon={(
-                  <Icon
+                  <CloseOutlined
                     onClick={onClose}
-                    type="close"
                   />
                 )}
               />
