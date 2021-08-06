@@ -14,7 +14,7 @@ export default function Content({
   name: string,
   version: string,
 }) {
-  const [layoutOption, setLayoutOption] = useState(LayoutOption[LayoutEnum.FCose])
+  const [layoutOption, setLayoutOption] = useState(LayoutOption[LayoutEnum.Cola])
   const [fixedSize, setFixedSize] = useState(false)
   const [cyInstance, setCyInstance] = useState()
   const {

@@ -9,8 +9,14 @@ Note: office npm registry does not support cors
 
 # Options
 
-Click `Setting` on left top of page, you can
+Click `Setting` on left top of page, you can change your setting, it will take some time to change layout if graph is very large
 
-- change default registry
-- change layout
-- find root package
+# Example
+
+- Large scale graph with `fixedSize` and `Layout: Concentric` would be nice like a `Ring World` below
+
+![Ring World](/assets/ring_world.png)
+
+- `Layout: fCose` is recommended when there is a large scale graph with `fixedSize` unchecked when node size is determined by package size
+
+![fCose](/assets/fcose.png)
