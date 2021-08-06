@@ -134,6 +134,7 @@ function getNodeData(
     ? 5
     : Math.max(pkgInfo.dist.size / 20480, 5)
 
+  const styleSize = Number.isNaN(displaySize) ? 5 : displaySize
   return {
     data: {
       id: fullName
@@ -144,8 +145,9 @@ function getNodeData(
       detail: pkgInfo
     },
     style: {
-      height: Number.isNaN(displaySize) ? 5 : displaySize,
-      width: Number.isNaN(displaySize) ? 5 : displaySize,
+      height: styleSize,
+      width: styleSize,
+      'text-halign': styleSize > 20 ? 'center' : 'right',
       'background-color': getStellarColor(currentLevel)
     }
   }

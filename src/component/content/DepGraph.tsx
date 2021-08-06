@@ -48,8 +48,7 @@ export default function DepGraph({
             'font-size': '6px',
             color: '#333',
             'text-valign': 'center',
-            'text-halign': 'right',
-            shape: 'ellipse'
+            shape: 'ellipse',
           }
         },
         {
