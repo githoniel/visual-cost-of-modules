@@ -85,6 +85,7 @@ export default function GraphDraw({
                 enterButton="OK"
                 onSearch={(value: string) => {
                   pm.registry = value
+                  pm.cache = {}
                 }}
               />
             </div>

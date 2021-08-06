@@ -31,7 +31,7 @@ export interface RegistryPkgInfo {
 }
 
 export default class PackageManager {
-  public registry = 'https://api.npms.io/v2/package/'
+  public registry = 'https://registry.npmjs.cf/'
 
   public timeout = 0
 
