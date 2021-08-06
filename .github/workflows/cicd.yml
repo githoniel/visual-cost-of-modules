@@ -18,7 +18,7 @@ jobs:
           node-version: '14'
 
       - name: yarn install
-        uses: bahmutov/npm-install@v2
+        uses: bahmutov/npm-install@v1
 
       - run: npm run build
 
