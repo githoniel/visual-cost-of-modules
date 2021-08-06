@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import cytoscape from 'cytoscape'
-import fcose from 'cytoscape-fcose'
 
 import createGraphEvent from '@/lib/createGraphEvent'
 import {
@@ -9,20 +8,25 @@ import {
 import { usePM } from '@/page/hook/usePMContext'
 import { SearchState } from '../header/hook/useSearch'
 import Loading from './Loading'
-import PkgInfo from './PkgInfo'
-
-cytoscape.use(fcose)
+import PkgInfo, { EdgeInfo } from './PkgInfo'
 
 export default function DepGraph({
   name,
-  version
+  version,
+  layoutOption,
+  setCyInstance
 }: {
   name: string,
   version: string,
+  layoutOption: Object,
+  setCyInstance: (cy: any) => void
 }) {
   const [message, setMessage] = useState('Loading')
   const [status, setStatus] = useState<SearchState>(SearchState.Idle)
-  const [info, setInfo] = useState<GraphNodeScratch>()
+  const [info, setInfo] = useState<(GraphNodeScratch & EdgeInfo) | {
+    source: string,
+    target: string
+  }>()
 
   const { pm } = usePM()
   useEffect(() => {
@@ -37,17 +41,21 @@ export default function DepGraph({
           selector: 'node',
           style: {
             label: 'data(id)',
-            'font-size': '8px',
+            'font-size': '6px',
+            color: '#333',
+            // 'text-outline-color': '#888',
+            // 'text-outline-width': 1,
             'text-valign': 'center',
-            'text-halign': 'center',
+            'text-halign': 'right',
             shape: 'ellipse'
           }
         },
         {
           selector: 'edge',
           style: {
-            width: 1,
+            width: 0.5,
             'line-color': '#ccc',
+            'font-size': '6px',
             'target-arrow-color': '#ccc',
             'target-arrow-shape': 'triangle-backcurve',
             'curve-style': 'bezier',
@@ -71,26 +79,48 @@ export default function DepGraph({
       .onEvent(EventType.End, () => {
         setStatus(SearchState.Succ)
         setMessage('Load dependencies done')
+        cy.elements().off('click').on('click', (e) => {
+          const { target } = e
+          if (target.isEdge()) {
+            setInfo({
+              source: target.source().data().id,
+              target: target.target().data().id
+            })
+          } else if (target.isNode()) {
+            const nodeScratch = target.scratch()
+            const { id } = target.data()
+            const requirePkg: string[] = []
+            const requiredByPkg: string[] = []
+            target.connectedEdges()
+              .forEach((edge) => {
+                const sourceId = edge.source().data().id
+                const targetId = edge.target().data().id
+                if (sourceId === id) {
+                  requiredByPkg.push(targetId)
+                } else {
+                  requirePkg.push(sourceId)
+                }
+              })
+            console.dir(nodeScratch)
+            setInfo({
+              ...nodeScratch,
+              requirePkg,
+              requiredByPkg,
+            })
+          }
+        })
       })
       .onEvent(EventType.Data, (data: {
         nodes: GraphNode[]
         edges: GraphLink[]
       }) => {
         cy.add(data)
-        cy.nodes().on('click', (e) => {
-          const nodeScratch = e.target.scratch()
-          console.log(nodeScratch)
-          setInfo(nodeScratch)
-        })
-        cy.layout({
-          name: 'fcose',
-          quality: 'proof',
-          nodeDimensionsIncludeLabels: true,
-        }).run()
+        cy.layout(layoutOption).run()
       })
-
+    setCyInstance(cy)
     return () => {
       cy.unmount()
+      setCyInstance(undefined)
     }
   }, [])
 

@@ -1,8 +1,30 @@
 .pkg-info-card {
   position: absolute;
-  height: 300px;
-  width: 300px;
+  background: rgba(255, 255, 255, 0.89);
+  width: 500px;
   bottom: 0;
   left: 0;
   z-index: 100;
+  font-size: 12px;
+  max-height: 90%;
+  overflow-y: auto;
+
+  .line {
+    display: flex;
+    flex-direction: row;
+    word-break: break-all;
+
+    .title {
+      flex: 1;
+
+      &::after {
+        content: ' :';
+      }
+    }
+
+    .value {
+      flex: 2;
+      text-align: right;
+    }
+  }
 }

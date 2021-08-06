@@ -4,6 +4,7 @@ import maxSatisfying from 'semver/ranges/max-satisfying'
 export interface PkgInfo {
   name: string,
   version: string,
+  homepage: string,
   dist: {
     size: number,
     tarball: string
@@ -77,16 +78,22 @@ export default class PackageManager {
     requiredVersion: string
   ) {
     let pkgInfo: RegistryPkgInfo & PkgInfo
-    if (this.cache[packageName]) {
-      pkgInfo = this.cache[packageName]
+    const cacheKey = `${packageName}@${requiredVersion}`
+    if (this.cache[cacheKey]) {
+      return this.cache[cacheKey]
     } else {
       pkgInfo = await this.getMetadata(packageName)
-      this.cache[packageName] = pkgInfo
+      const versions = Object.keys(pkgInfo.versions)
+      const bestVersion = requiredVersion === 'latest'
+        ? pkgInfo['dist-tags'][requiredVersion]
+        : maxSatisfying(versions, requiredVersion)!
+
+      const result = pkgInfo.versions[bestVersion] as RegistryPkgInfo & PkgInfo
+      if (!result) {
+        throw new Error(`${cacheKey} no found in registry`)
+      }
+      this.cache[cacheKey] = result
+      return result
     }
-    const versions = Object.keys(pkgInfo.versions)
-    const bestVersion = requiredVersion === 'latest'
-      ? pkgInfo['dist-tags'][requiredVersion]
-      : maxSatisfying(versions, requiredVersion)!
-    return pkgInfo.versions[bestVersion] as RegistryPkgInfo & PkgInfo
   }
 }

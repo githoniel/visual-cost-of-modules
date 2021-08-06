@@ -1,13 +1,20 @@
 .fish-layout-content {
-  > * {
+  position: relative;
+
+  > #dep-graph {
     height: 100%;
     width: 100%;
   }
 
   .fish-alert {
     position: absolute;
-    height: 40px;
     z-index: 99;
+    width: 100%;
+
+    .fish-alert-message {
+      white-space: pre-wrap;
+      overflow-wrap: break-word;
+    }
   }
 
   svg {

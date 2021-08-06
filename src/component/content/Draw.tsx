@@ -1,0 +1,110 @@
+import React, { useState } from 'react'
+import {
+  Button, Card, Icon, Input, Select
+} from 'fish'
+import './style/draw.less'
+import { usePM } from '@/page/hook/usePMContext'
+import { LayoutEnum, LayoutOption } from './const'
+
+const { Option } = Select
+
+export default function GraphDraw({
+  layoutOption,
+  setLayoutOption,
+  cyInstance
+}: {
+  layoutOption: any,
+  setLayoutOption: (value: any) => void,
+  cyInstance: any
+}) {
+  const { pm } = usePM()
+  const [visible, setVisible] = useState(false)
+  const showDrawer = () => {
+    setVisible(true)
+  }
+  const onClose = () => {
+    setVisible(false)
+  }
+
+  function handleChange(value: string) {
+    setLayoutOption(LayoutOption[value])
+    if (cyInstance) {
+      cyInstance.layout(LayoutOption[value])
+        .run()
+    }
+  }
+
+  return (
+    <>
+      <div className="draw-opener">
+        <Button
+          type="text"
+          shape="circle"
+          icon={(
+            <Icon
+              onClick={
+              showDrawer
+            }
+              type="setting"
+            />
+        )}
+        />
+      </div>
+      {
+        visible && (
+          <Card
+            className="draw-setting"
+            size="small"
+            title="Graph"
+            extra={(
+              <Button
+                type="text"
+                shape="circle"
+                icon={(
+                  <Icon
+                    onClick={onClose}
+                    type="close"
+                  />
+                )}
+              />
+            )}
+            style={{ width: 400, }}
+          >
+            <div>
+              <Input.Search
+                placeholder="输入搜索文本"
+                defaultValue={pm.registry}
+                enterButton="OK"
+                onSearch={(value: string) => {
+                  pm.registry = value
+                }}
+              />
+            </div>
+            <br />
+            <div>
+              <span>
+                Layout:
+              </span>
+              <Select
+                defaultValue={layoutOption.name}
+                style={{ width: 120 }}
+                onChange={handleChange}
+              >
+                {
+                  Object.keys(LayoutEnum).map((key) => (
+                    <Option
+                      value={LayoutEnum[key]}
+                      key={key}
+                    >
+                      {key}
+                    </Option>
+                  ))
+                }
+              </Select>
+            </div>
+          </Card>
+        )
+      }
+    </>
+  )
+}
