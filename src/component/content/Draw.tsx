@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import {
-  Button, Card, Input, Select, Checkbox
+  Button, Card, Select, Checkbox, AutoComplete
 } from 'antd'
 import {
   SettingOutlined,
@@ -64,14 +64,22 @@ export default function GraphDraw({
     forceUpdate()
   }
 
+  const onRegistryChange = (r: string) => {
+    console.log(r)
+    pm.registry = r
+    pm.cache = {}
+  }
+
   return (
     <>
       <div className="draw-opener">
         <Button
           type="text"
           shape="circle"
+          size="large"
           icon={(
             <SettingOutlined
+              style={{ fontSize: '24px', color: '#08c' }}
               onClick={
                 showDrawer
               }
@@ -99,14 +107,26 @@ export default function GraphDraw({
             style={{ width: 400, }}
           >
             <div>
-              <Input.Search
-                placeholder="input registry, end with `/`"
+              <span>
+                Registry:
+              </span>
+              <AutoComplete
+                options={[
+                  {
+                    value: 'https://r.cnpmjs.org/'
+                  },
+                  {
+                    value: 'https://registry.npm.taobao.org/'
+                  },
+                  {
+                    value: 'https://registry.npmjs.cf/'
+                  }
+                ]}
                 defaultValue={pm.registry}
-                enterButton="OK"
-                onSearch={(value: string) => {
-                  pm.registry = value
-                  pm.cache = {}
-                }}
+                style={{ width: 200 }}
+                onSelect={onRegistryChange}
+                onChange={onRegistryChange}
+                placeholder="input registry, end with `/`"
               />
             </div>
             <br />
@@ -145,7 +165,7 @@ export default function GraphDraw({
             </div>
             <br />
             <div>
-              <Button onClick={findRoot}>Go to Root</Button>
+              <Button onClick={findRoot}>Back to Root</Button>
               <span>{' '}</span>
               <Button onClick={relayout}>Refresh Layout</Button>
             </div>

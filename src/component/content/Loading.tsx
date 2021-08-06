@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { Alert } from 'antd'
 import { SearchState } from '../header/hook/useSearch'
 
@@ -22,10 +22,25 @@ export default function Loading({
       break
     // no default
   }
+
+  const [hide, setHide] = useState(false)
+  useEffect(() => {
+    setHide(false)
+    let setTimeoutId: number
+    if (type === 'success') {
+      setTimeoutId = window.setTimeout(() => {
+        setHide(true)
+      }, 3000)
+    }
+    return () => {
+      clearTimeout(setTimeoutId)
+    }
+  }, [type])
+
   return (
     <>
       {
-        type && (
+        type && !hide && (
           <Alert
             message={message}
             closable={type === 'success'}
