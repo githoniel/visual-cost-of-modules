@@ -6,6 +6,7 @@ const { defineConfig } = require('@gem-mine/script')
 
 module.exports = defineConfig({
   showDevEntry: false,
+  publicPath: '/visual-cost-of-modules/',
   css: {
     loaderOptions: {
       less: {
